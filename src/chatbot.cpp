@@ -21,7 +21,7 @@ ChatBot::ChatBot()
 ChatBot::ChatBot(std::string filename)
 {
     std::cout << "ChatBot Constructor" << std::endl;
-    
+
     // invalidate data handles
     _chatLogic = nullptr;
     _rootNode = nullptr;
@@ -35,7 +35,7 @@ ChatBot::~ChatBot()
     std::cout << "ChatBot Destructor" << std::endl;
 
     // deallocate heap memory
-    if(_image != NULL) // Attention: wxWidgets used NULL and not nullptr
+    if (_image != NULL) // Attention: wxWidgets used NULL and not nullptr
     {
         delete _image;
         _image = NULL;
@@ -44,6 +44,69 @@ ChatBot::~ChatBot()
 
 //// STUDENT CODE
 ////
+
+// Task 2 : The Rule Of Five
+// In file chatbot.h / chatbot.cpp, make changes to the class ChatBot such
+// that it complies with the Rule of Five. Make sure to properly
+// allocate / deallocate memory resources on the heap and also copy member
+// data where it makes sense to you. In each of the methods (e.g. the copy
+// constructor), print a string of the type "ChatBot Copy Constructor" to
+// the console so that you can see which method is called in later examples.
+
+// Copy Constructor
+ChatBot::ChatBot(ChatBot const &other)
+    : _image(other._image),
+      _currentNode(other._currentNode),
+      _rootNode(other._rootNode),
+      _chatLogic(other._chatLogic)
+{
+    std::cout << "ChatBot Copy Constructor" << std::endl;
+}
+// Copy Assignment Operator
+ChatBot &ChatBot::operator=(ChatBot const &other)
+{
+    std::cout << "ChatBot Copy Assignment Operator" << std::endl;
+    if (this != &other)
+    {
+        delete _image;
+        _image = other._image;
+        _chatLogic = other._chatLogic;
+        _rootNode = other._rootNode;
+        _chatLogic = other._chatLogic;
+    }
+    return *this;
+}
+// Move Constructor
+ChatBot::ChatBot(ChatBot &&other)
+{
+    std::cout << "ChatBot Move Constructor" << std::endl;
+    _image = other._image;
+    _chatLogic = other._chatLogic;
+    _rootNode = other._rootNode;
+    _chatLogic = other._chatLogic;
+    other._image = nullptr;
+    other._chatLogic = nullptr;
+    other._rootNode = nullptr;
+    other._chatLogic = nullptr;
+}
+// Move Assignment Operator
+ChatBot &ChatBot::operator=(ChatBot &&other)
+{
+    std::cout << "ChatBot Move Assignment Operator" << std::endl;
+    if (this != &other)
+    {
+        delete _image;
+        _image = other._image;
+        _chatLogic = other._chatLogic;
+        _rootNode = other._rootNode;
+        _chatLogic = other._chatLogic;
+        other._image = nullptr;
+        other._chatLogic = nullptr;
+        other._rootNode = nullptr;
+        other._chatLogic = nullptr;
+    }
+    return *this;
+}
 
 ////
 //// EOF STUDENT CODE
@@ -69,7 +132,8 @@ void ChatBot::ReceiveMessageFromUser(std::string message)
     if (levDists.size() > 0)
     {
         // sort in ascending order of Levenshtein distance (best fit is at the top)
-        std::sort(levDists.begin(), levDists.end(), [](const EdgeDist &a, const EdgeDist &b) { return a.second < b.second; });
+        std::sort(levDists.begin(), levDists.end(), [](const EdgeDist &a, const EdgeDist &b)
+                  { return a.second < b.second; });
         newNode = levDists.at(0).first->GetChildNode(); // after sorting the best edge is at first position
     }
     else
